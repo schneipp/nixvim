@@ -244,6 +244,7 @@
             # here you can add all the packages you want to have in your dev environment
             nvim
             pkgs.jq
+            pkgs.tmux
             pkgs.neofetch
             pkgs.ripgrep
             pkgs.fzf
