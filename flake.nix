@@ -62,11 +62,11 @@
               action = "nzzzv";
               key = "n";
             }
-            {
-              mode = "n";
-              action = "Nzzzv";
-              key = "N";
-            }
+            { mode = "n"; action = "Nzzzv"; key = "N"; }
+            { mode = "n"; action = "vim.lsp.buf.definition"; key = "gd"; }
+            { mode = "n"; action = "require('telescope.builtin').lsp_references"; key = "gr"; }
+            { mode = "n"; action = "require('telescope.builtin').lsp_document_symbols"; key = "<leader>ds"; }
+            { mode = "n"; action = "vim.lsp.buf.hover"; key = "K"; }
             {
               mode = "v";
               action = "<cmd>lua require('multicursor').start()<CR>";
@@ -104,6 +104,7 @@
               key = "<S-j>";
             }
           ];
+          #enable inline hints
           colorschemes.catppuccin.enable = true;
           globals.mapleader = " ";
           options = {
@@ -122,6 +123,9 @@
           #copilot
           plugins.copilot-lua = {
             enable = true;
+            filetypes = {
+              "*" = true;
+            };
             serverOptsOverrides = {
             panel = {
                 enabled = true;
@@ -157,9 +161,6 @@
             enable = true;
 
           };
-          plugins.luasnip = {
-            enable = true;
-          };
           #lualine
           plugins.lualine = {
             enable = true;
@@ -172,37 +173,41 @@
           plugins.treesitter = {
             enable = true;
           };
+          plugins.luasnip = {
+            enable = true;
+          };
           plugins.nvim-cmp = {
             enable = true;
+
             autoEnableSources = true;
             sources = [
               {name = "nvim_lsp";}
+              {name = "luasnip";}
               {name = "path";}
               {name = "buffer";}
-              {name = "luasnip";}
             ];
 
             mapping = {
               "<CR>" = "cmp.mapping.confirm({ select = true })";
-              "<Tab>" = {
-                action = ''
-                  function(fallback)
-                    if cmp.visible() then
-                      cmp.select_next_item()
-                    elseif luasnip.expandable() then
-                      luasnip.expand()
-                    elseif luasnip.expand_or_jumpable() then
-                      luasnip.expand_or_jump()
-                    elseif check_backspace() then
-                      fallback()
-                    else
-                      fallback()
-                    end
-                  end
-                '';
-                modes = [ "i" "s" ];
+              "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+              "<C-e>" = "cmp.mapping.close()";
+              "<C-f>" = "cmp.mapping.scroll_docs(4)";
+              "<C-n>" = {
+                action = "cmp.mapping.select_next_item()";
+                modes = [
+                  "i"
+                  "s"
+                ];
+              };
+              "<C-p>" = {
+                action = "cmp.mapping.select_prev_item()";
+                modes = [
+                  "i"
+                  "s"
+                ];
               };
             };
+            
           };
           plugins.lsp-format = {
             enable = true;
@@ -223,6 +228,8 @@
             enable = true;
 
             servers = {
+              nil_ls.enable = true;
+
               tsserver.enable = true;
               html.enable = true;
               lua-ls = {
@@ -251,6 +258,7 @@
             pkgs.git
             pkgs.gh
             pkgs.lazygit
+            pkgs.nodejs
           ];
           shellHook = ''
           echo "Welcome to the dev environment!"
